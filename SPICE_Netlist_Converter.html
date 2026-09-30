@@ -1,0 +1,501 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+  #spc-cvt, #spc-cvt * {
+    box-sizing: border-box !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  #spc-cvt {
+    --bg:      #010409;
+    --bg2:     #0d1117;
+    --bg3:     #161b22;
+    --border:  #21262d;
+    --border2: #30363d;
+    --ac:      #58a6ff;
+    --ac2:     #7c3aed;
+    --ac3:     #6d28d9;
+    --green:   #3fb950;
+    --yellow:  #d29922;
+    --text:    #e6edf3;
+    --dim:     #8b949e;
+    --dim2:    #6e7681;
+    --dim3:    #21262d;
+    --warn:    #f85149;
+    --warn-bg: #2d1214;
+    --warn-border: #4c1d20;
+    --ok:      #3fb950;
+  }
+
+  #spc-cvt {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
+    background-image: none !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px;
+    max-width: 920px;
+    margin: 0 auto;
+    overflow: hidden;
+    font-size: 15px;
+  }
+
+  #spc-cvt .spc-header {
+    background: #0d1117 !important;
+    background-color: #0d1117 !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #spc-cvt .spc-dots { display: flex; gap: 6px; }
+  #spc-cvt .spc-dot { width: 10px; height: 10px; border-radius: 50%; }
+  #spc-cvt .spc-dot.r { background: #f85149 !important; }
+  #spc-cvt .spc-dot.y { background: #d29922 !important; }
+  #spc-cvt .spc-dot.g { background: #3fb950 !important; }
+  #spc-cvt .spc-title {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #fff !important;
+    text-transform: uppercase;
+    flex: 1;
+    text-align: center;
+  }
+  #spc-cvt .spc-title span { color: var(--ac) !important; }
+
+  #spc-cvt .spc-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* DIALECT SELECT ROW */
+  #spc-cvt .spc-dialect-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: end;
+  }
+  #spc-cvt .spc-dblock {
+    background: var(--bg2) !important;
+    background-color: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  #spc-cvt .spc-dblock-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--ac) !important;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #spc-cvt .spc-dblock select {
+    background-color: var(--bg3) !important;
+    background-image: none !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 5px;
+    color: var(--text) !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 8px;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.2s;
+  }
+  #spc-cvt .spc-dblock select option {
+    background: var(--bg3) !important;
+    color: var(--text) !important;
+  }
+  #spc-cvt .spc-dblock select:focus { border-color: var(--ac) !important; }
+  #spc-cvt .spc-dblock select:hover { border-color: var(--ac) !important; }
+  #spc-cvt .spc-swap {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #1f2937 !important;
+    background-color: #1f2937 !important;
+    border: 1px solid var(--border2) !important;
+    color: var(--text) !important;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, color 0.2s, border-color 0.2s;
+    margin-bottom: 2px;
+  }
+  #spc-cvt .spc-swap:hover { background: var(--ac3) !important; border-color: var(--ac2) !important; color: #fff !important; transform: rotate(180deg); }
+
+  /* INPUT AREA */
+  #spc-cvt .spc-zone {
+    border: 1px dashed var(--border2) !important;
+    border-radius: 8px;
+    padding: 14px 16px 16px;
+    background: var(--bg2) !important;
+    background-color: var(--bg2) !important;
+  }
+  #spc-cvt .spc-zone.drag-over { border-color: var(--ac) !important; background: rgba(88,166,255,0.05) !important; }
+  #spc-cvt .spc-zone-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #spc-cvt .spc-zone-label { font-size: 11px; color: var(--dim) !important; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+  #spc-cvt .spc-filebtn {
+    background: #1f2937 !important;
+    background-color: #1f2937 !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 5px;
+    color: var(--text) !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  #spc-cvt .spc-filebtn:hover { background: var(--ac3) !important; border-color: var(--ac2) !important; color: #fff !important; }
+  #spc-cvt #spc-file-input { display: none; }
+  #spc-cvt textarea {
+    width: 100%;
+    min-height: 190px;
+    background-color: var(--bg) !important;
+    background-image: none !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 5px;
+    color: var(--text) !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 12.5px;
+    line-height: 1.6;
+    padding: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-text-fill-color: var(--text) !important;
+    box-shadow: none !important;
+  }
+  #spc-cvt textarea:focus { border-color: var(--ac) !important; background-color: var(--bg) !important; color: var(--text) !important; }
+  #spc-cvt textarea::placeholder { color: var(--dim2) !important; opacity: 1 !important; }
+  #spc-cvt textarea:-webkit-autofill,
+  #spc-cvt textarea:-webkit-autofill:hover,
+  #spc-cvt textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+  #spc-cvt .spc-filename { font-size: 10px; color: var(--dim2) !important; margin-top: 6px; font-family: 'IBM Plex Mono', 'Courier New', monospace !important; }
+
+  /* CONVERT BUTTON */
+  #spc-cvt .spc-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  #spc-cvt .spc-btn {
+    background: #1f2937 !important;
+    background-color: #1f2937 !important;
+    background-image: none !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 6px;
+    color: var(--text) !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  #spc-cvt .spc-btn:hover:not(:disabled) { background: var(--ac3) !important; color: #fff !important; border-color: var(--ac2) !important; }
+  #spc-cvt .spc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #spc-cvt .spc-btn.spc-primary {
+    background: #238636 !important;
+    background-color: #238636 !important;
+    border-color: #2ea043 !important;
+    color: #fff !important;
+  }
+  #spc-cvt .spc-btn.spc-primary:hover:not(:disabled) { background: #2ea043 !important; background-color: #2ea043 !important; color: #fff !important; border-color: #3fb950 !important; }
+
+  /* WARN BANNER */
+  #spc-cvt .spc-alert {
+    display: none;
+    background: var(--warn-bg) !important;
+    background-color: var(--warn-bg) !important;
+    border: 1px solid var(--warn-border) !important;
+    border-radius: 6px;
+    padding: 10px 13px;
+    font-size: 12px;
+    color: #ff7b72 !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+  }
+  #spc-cvt .spc-alert.visible { display: block; }
+
+  /* OUTPUT */
+  #spc-cvt .spc-output-wrap { display: none; flex-direction: column; gap: 12px; }
+  #spc-cvt .spc-output-wrap.visible { display: flex; }
+  #spc-cvt .spc-out-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #spc-cvt .spc-out-name { font-size: 12px; color: var(--ac) !important; font-family: 'IBM Plex Mono', 'Courier New', monospace !important; font-weight: 700; }
+  #spc-cvt .spc-out-stats { font-size: 10.5px; color: var(--dim) !important; font-family: 'IBM Plex Mono', 'Courier New', monospace !important; }
+  #spc-cvt .spc-code-wrap {
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
+    background-image: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px;
+    max-height: 380px;
+    overflow: auto;
+    padding: 12px 14px;
+  }
+  #spc-cvt .spc-code-wrap pre {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 12px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text) !important;
+    background: transparent !important;
+  }
+  #spc-cvt .spc-code-wrap pre * { font-family: 'IBM Plex Mono', 'Courier New', monospace !important; }
+  #spc-cvt .syn-comment { color: var(--dim2) !important; }
+  #spc-cvt .syn-directive { color: #d2a8ff !important; }
+  #spc-cvt .syn-num { color: var(--ac) !important; }
+  #spc-cvt .syn-changed { background: rgba(63,185,80,0.08) !important; border-left: 2px solid var(--green); padding-left: 6px; margin-left: -8px; }
+  #spc-cvt .syn-flagged { background: rgba(248,81,73,0.08) !important; border-left: 2px solid var(--warn); padding-left: 6px; margin-left: -8px; }
+
+  /* REPORT */
+  #spc-cvt .spc-report {
+    background: var(--bg2) !important;
+    background-color: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  #spc-cvt .spc-report-head {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--ac) !important;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  #spc-cvt .spc-report-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+  #spc-cvt .spc-report-item {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 6px 9px;
+    border-radius: 4px;
+    display: flex;
+    gap: 8px;
+  }
+  #spc-cvt .spc-report-item.ok { background: rgba(63,185,80,0.06) !important; color: var(--text) !important; }
+  #spc-cvt .spc-report-item.ok .tag { color: var(--green) !important; }
+  #spc-cvt .spc-report-item.warn { background: rgba(248,81,73,0.07) !important; color: var(--text) !important; }
+  #spc-cvt .spc-report-item.warn .tag { color: #ff7b72 !important; }
+  #spc-cvt .spc-report-item .tag { font-weight: 700; white-space: nowrap; }
+  #spc-cvt .spc-report-empty { font-size: 11.5px; color: var(--dim2) !important; font-family: 'IBM Plex Mono', 'Courier New', monospace !important; }
+
+  #spc-cvt .spc-note {
+    font-size: 11px;
+    color: var(--dim2) !important;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 560px) {
+    #spc-cvt .spc-dialect-row { grid-template-columns: 1fr; }
+    #spc-cvt .spc-swap { justify-self: center; margin: 0 auto; }
+  }
+</style>
+
+<div id="spc-cvt">
+  <div class="spc-header">
+    <div class="spc-dots"><span class="spc-dot r"></span><span class="spc-dot y"></span><span class="spc-dot g"></span></div>
+    <div class="spc-title">SPICE DIALECT <span>CONVERTER</span></div>
+  </div>
+
+  <div class="spc-body">
+
+    <div class="spc-dialect-row">
+      <div class="spc-dblock">
+        <div class="spc-dblock-label">Source Dialect</div>
+        <select id="spc-from">
+          <option value="pspice">PSpice</option>
+          <option value="ltspice">LTspice</option>
+          <option value="ngspice">ngspice</option>
+          <option value="spice3f5">SPICE3F5</option>
+          <option value="prospice">ProSpice</option>
+        </select>
+      </div>
+      <div class="spc-swap" id="spc-swap" title="Swap source and target">⇆</div>
+      <div class="spc-dblock">
+        <div class="spc-dblock-label">Target Dialect</div>
+        <select id="spc-to">
+          <option value="ltspice">LTspice</option>
+          <option value="pspice">PSpice</option>
+          <option value="ngspice">ngspice</option>
+          <option value="spice3f5">SPICE3F5</option>
+          <option value="prospice">ProSpice</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="spc-zone" id="spc-zone">
+      <div class="spc-zone-top">
+        <span class="spc-zone-label">Netlist Input</span>
+        <button class="spc-filebtn" id="spc-filebtn" type="button">LOAD FILE</button>
+        <input accept=".cir,.net,.sp,.spi,.txt,.lib,.asc" id="spc-file-input" type="file" />
+      </div>
+      <textarea id="spc-input" placeholder="Paste your netlist here, or drag &amp; drop a .cir / .net / .sp / .txt file...
+
+Example:
+* RC low-pass filter
+V1 in 0 AC 1
+R1 in out 1k
+C1 out 0 1u
+B1 amp 0 V=2*V(out)
+.AC DEC 10 1 1MEG
+.END"></textarea>
+      <div class="spc-filename" id="spc-filename"></div>
+    </div>
+
+    <div class="spc-actions">
+      <button class="spc-btn spc-primary" id="spc-convert-btn" type="button">CONVERT</button>
+      <button class="spc-btn" id="spc-reset-btn" type="button">RESET</button>
+    </div>
+
+    <div class="spc-alert" id="spc-alert"></div>
+
+    <div class="spc-output-wrap" id="spc-output-wrap">
+      <div class="spc-out-head">
+        <span class="spc-out-name" id="spc-out-name">converted.cir</span>
+        <span class="spc-out-stats" id="spc-out-stats"></span>
+      </div>
+      <div class="spc-code-wrap"><pre id="spc-output-code"></pre></div>
+      <div class="spc-actions">
+        <button class="spc-btn" id="spc-copy-btn" type="button">COPY</button>
+        <button class="spc-btn" id="spc-dl-btn" type="button">DOWNLOAD .CIR</button>
+      </div>
+
+      <div class="spc-report">
+        <div class="spc-report-head">Conversion Report</div>
+        <div class="spc-report-list" id="spc-report-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  // EDIT THIS: where spice-core.js and the converter files are hosted (jsDelivr serves GitHub repos).
+  // Pin a release tag (e.g. @v1.0.0) for stable caching; @main can be cached for hours.
+  var BASE = 'https://cdn.jsdelivr.net/gh/YOUR_GITHUB_USER/YOUR_REPO@main/';
+  // One entry per supported direction -> the file that registers it. Add a line per new converter.
+  var PAIRS = { 'spice3f5->pspice': 'spice3f5-to-pspice.js', 'prospice->pspice': 'spice3f5-to-pspice.js' };
+  var LABEL = { pspice: 'PSpice', ltspice: 'LTspice', ngspice: 'ngspice', spice3f5: 'SPICE3F5', prospice: 'ProSpice' };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var fromSel = $('spc-from'), toSel = $('spc-to'), zone = $('spc-zone'), inputArea = $('spc-input'),
+      alertEl = $('spc-alert'), outWrap = $('spc-output-wrap'), outName = $('spc-out-name'),
+      reportList = $('spc-report-list'), fileName = '', converted = '';
+  fromSel.value = 'spice3f5'; toSel.value = 'pspice';
+
+  function showAlert(m) { alertEl.textContent = m; alertEl.classList.add('visible'); }
+  function hideAlert() { alertEl.classList.remove('visible'); }
+
+  var loaded = {};
+  function load(file) {
+    if (!loaded[file]) loaded[file] = new Promise(function (ok, bad) {
+      var s = document.createElement('script'); s.src = BASE + file; s.onload = ok;
+      s.onerror = function () { delete loaded[file]; bad(new Error('Could not load ' + BASE + file)); };
+      document.head.appendChild(s);
+    });
+    return loaded[file];
+  }
+
+  function loadFile(f) {
+    var r = new FileReader();
+    r.onload = function (e) { inputArea.value = e.target.result; fileName = f.name; $('spc-filename').textContent = 'Loaded: ' + f.name + ' (' + f.size + ' bytes)'; };
+    r.readAsText(f);
+  }
+  $('spc-filebtn').onclick = function () { $('spc-file-input').click(); };
+  $('spc-file-input').onchange = function (e) { if (e.target.files[0]) loadFile(e.target.files[0]); };
+  ['dragenter', 'dragover'].forEach(function (n) { zone.addEventListener(n, function (e) { e.preventDefault(); zone.classList.add('drag-over'); }); });
+  ['dragleave', 'drop'].forEach(function (n) { zone.addEventListener(n, function (e) { e.preventDefault(); zone.classList.remove('drag-over'); }); });
+  zone.addEventListener('drop', function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  $('spc-swap').onclick = function () { var a = fromSel.value; fromSel.value = toSel.value; toSel.value = a; };
+
+  function highlight(text) {
+    return text.split('\n').map(function (line) {
+      var e = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      if (/^\s*\*\s*\[UNSUPPORTED/i.test(line)) return '<span class="syn-flagged syn-comment">' + e + '</span>';
+      if (/^\s*\*/.test(line)) return '<span class="syn-comment">' + e + '</span>';
+      if (/^\s*\./.test(line)) e = e.replace(/^(\s*\.[A-Za-z]+)/, '<span class="syn-directive">$1</span>');
+      return e;
+    }).join('\n');
+  }
+  function renderReport(notes) {
+    reportList.innerHTML = '';
+    notes.forEach(function (n) {
+      var d = document.createElement('div'), t = document.createElement('span'), m = document.createElement('span');
+      d.className = 'spc-report-item ' + (n.type === 'warn' ? 'warn' : 'ok');
+      t.className = 'tag'; t.textContent = n.type === 'warn' ? '[REVIEW]' : '[OK]'; m.textContent = n.msg;
+      d.appendChild(t); d.appendChild(m); reportList.appendChild(d);
+    });
+  }
+
+  $('spc-convert-btn').onclick = function () {
+    hideAlert();
+    var from = fromSel.value, to = toSel.value, key = from + '->' + to;
+    if (!inputArea.value.trim()) return showAlert('Paste a netlist or load a file first.');
+    if (from === to) { outWrap.classList.remove('visible'); return showAlert('Source and target dialects are the same - nothing to convert.'); }
+    if (!PAIRS[key]) { outWrap.classList.remove('visible'); return showAlert('No ' + LABEL[from] + ' \u2192 ' + LABEL[to] + ' converter yet. Write a converter file for it and add it to PAIRS in this page.'); }
+    if (/YOUR_GITHUB_USER/.test(BASE)) return showAlert('Set BASE at the top of this page\'s script to your jsDelivr/GitHub URL first.');
+    load('spice-core.js').then(function () { return load(PAIRS[key]); }).then(function () {
+      var r = SpiceCore.converters[key](inputArea.value);
+      converted = r.text;
+      outName.textContent = (fileName ? fileName.replace(/\.[^.]+$/, '') : 'converted') + '_' + to + '.cir';
+      $('spc-out-stats').textContent = LABEL[from] + ' \u2192 ' + LABEL[to] + ' \u00b7 ' + r.changed + ' line(s) changed \u00b7 ' + r.flagged + ' flagged for review';
+      $('spc-output-code').innerHTML = highlight(r.text);
+      renderReport(r.notes);
+      outWrap.classList.add('visible');
+    }).catch(function (e) { showAlert(e.message); });
+  };
+
+  $('spc-copy-btn').onclick = function () {
+    var b = $('spc-copy-btn'); if (!converted) return;
+    navigator.clipboard.writeText(converted).then(function () { var t = b.textContent; b.textContent = '\u2713 COPIED!'; setTimeout(function () { b.textContent = t; }, 1800); });
+  };
+  $('spc-dl-btn').onclick = function () {
+    if (!converted) return;
+    var a = document.createElement('a'), u = URL.createObjectURL(new Blob([converted], { type: 'text/plain' }));
+    a.href = u; a.download = outName.textContent; a.click(); URL.revokeObjectURL(u);
+  };
+  $('spc-reset-btn').onclick = function () {
+    inputArea.value = ''; $('spc-file-input').value = ''; fileName = ''; converted = ''; $('spc-filename').textContent = '';
+    hideAlert(); outWrap.classList.remove('visible');
+  };
+})();
+</script>
+
+<div><br /></div><div><strong>SPICE Dialect Converter</strong> rewrites netlists between SPICE flavors in your browser (nothing is uploaded). Each direction lives in its own JavaScript file, loaded on demand from GitHub via jsDelivr. Currently available: <strong>SPICE3F5 / ProSpice → PSpice</strong>, which converts B-sources to E/G <code>VALUE={}</code>, SW/CSW switch models to VSWITCH/ISWITCH, comments out Proteus-only probes, and only adds <code>.END</code> to files that contain an analysis command. Anything it cannot convert safely is commented out and listed in the Conversion Report.</div>
