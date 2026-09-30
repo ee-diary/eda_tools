@@ -3,6 +3,20 @@
   'use strict';
   var SCALE = { t: 1e12, g: 1e9, meg: 1e6, k: 1e3, mil: 25.4e-6, m: 1e-3, u: 1e-6, n: 1e-9, p: 1e-12, f: 1e-15, a: 1e-18 };
   var core = {
+    // EDIT HERE: text written at the top of every converted file.
+    HEADER: {
+      name: 'SPICE Converter by ee-diary',
+      url: 'https://ee-diary.net',
+      usage: ['Usage and license: for usage terms, licensing and support,', 'please contact via https://ee-diary.net']
+    },
+    header: function (from, to) {
+      var d = new Date(), z = function (n) { return (n < 10 ? '0' : '') + n; }, H = core.HEADER, bar = new Array(79).join('*');
+      var L = [bar, '* ' + H.name + ' (' + from + ' -> ' + to + ')', '* Website : ' + H.url,
+               '* Date    : ' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()), '*'];
+      H.usage.forEach(function (u) { L.push('* ' + u); });
+      L.push(bar);
+      return L;
+    },
     converters: {},                       // 'from->to' -> function (text) => {text, notes, changed, flagged}
     register: function (from, to, fn) { core.converters[from + '->' + to] = fn; },
     // Join '+' continuation lines. Returns [{ no: first physical line number, text }]
