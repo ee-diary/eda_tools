@@ -75,7 +75,15 @@
     });
 
     if (hasAnalysis && !sawEnd) { out.push('.END'); changed++; notes.push({ type: 'ok', msg: 'Added .END (analysis command found).' }); }
-    else if (!hasAnalysis) notes.push({ type: 'ok', msg: 'No analysis command found - treated as a library, so no .END was added (an .END inside an included file can end the parent netlist).' });
+    else if (!hasAnalysis) {
+      var n0 = out.length;
+      out = out.filter(function (s) { return !/^\s*\.end\s*$/i.test(s); });
+      if (out.length < n0) { changed++; notes.push({ type: 'ok', msg: 'No analysis command found - treated as a library, so the trailing .END was removed (an .END inside an included file can end the parent netlist).' }); }
+      else notes.push({ type: 'ok', msg: 'No analysis command found - treated as a library, so no .END was added.' });
+    }
+    // Banner after line 1 (line 1 may be the netlist title, so it must stay first)
+    var d = new Date(), pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    out.splice(1, 0, '* Converted by ee-diary SPICE Converter - https://ee-diary.net - ' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()));
     notes.push({ type: 'warn', msg: 'General: converted text was not run through PSpice. Include libraries with .LIB / .INC and test a small circuit first.' });
     return { text: out.join('\n'), notes: notes, changed: changed, flagged: flagged };
   }
