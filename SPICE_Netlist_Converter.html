@@ -411,7 +411,12 @@ B1 amp 0 V=2*V(out)
   // Pin a release tag (e.g. @v1.0.0) for stable caching; @main can be cached for hours.
   var BASE = 'https://cdn.jsdelivr.net/gh/ee-diary/eda_tools@main/';
   // One entry per supported direction -> the file that registers it. Add a line per new converter.
-  var PAIRS = { 'spice3f5->pspice': 'spice3f5-to-pspice.js', 'prospice->pspice': 'spice3f5-to-pspice.js' };
+  var PAIRS = {
+  'spice3f5->pspice': 'spice3f5-to-pspice.js',
+  'prospice->pspice': 'spice3f5-to-pspice.js',
+  'pspice->spice3f5': 'pspice-to-spice3f5.js',
+  'pspice->prospice': 'pspice-to-spice3f5.js'
+  };
   var LABEL = { pspice: 'PSpice', ltspice: 'LTspice', ngspice: 'ngspice', spice3f5: 'SPICE3F5', prospice: 'ProSpice' };
 
   var $ = function (id) { return document.getElementById(id); };
