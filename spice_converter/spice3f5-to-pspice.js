@@ -40,11 +40,15 @@
       var m = /^\s*([A-Za-z]\S*)/.exec(l.text);
       if (m) names[m[1].toUpperCase()] = 1;
     });
+    lines.forEach(function (l) { if (/^\s*\.(tran|ac|dc|op|tf|noise|disto)\b/i.test(l.text)) hasAnalysis = true; });
 
     lines.forEach(function (l) {
       var t = l.text.trim(), no = l.no, m, add = function (type, msg) { notes.push({ type: type, msg: 'Line ' + no + ': ' + msg }); };
       function emit(s, isFlag) { out.push(s); if (s !== l.text) changed++; if (isFlag) flagged++; }
-      if (t === '' || t.charAt(0) === '*') return out.push(l.text);
+      // Source comments are dropped (line 1 of a main netlist is its title and stays).
+      if (t.charAt(0) === '*') { if (hasAnalysis && no === 1) out.push(l.text); return; }
+      l.text = l.text.replace(/\s*;.*$/, ''); t = l.text.trim();
+      if (t === '') return out.push('');
 
       if (/^\.end\s*$/i.test(t)) sawEnd = true;
       if (/^\.(tran|ac|dc|op|tf|noise|disto)\b/i.test(t)) hasAnalysis = true;
@@ -81,10 +85,11 @@
       if (out.length < n0) { changed++; notes.push({ type: 'ok', msg: 'No analysis command found - treated as a library, so the trailing .END was removed (an .END inside an included file can end the parent netlist).' }); }
       else notes.push({ type: 'ok', msg: 'No analysis command found - treated as a library, so no .END was added.' });
     }
-    // Banner after line 1 (line 1 may be the netlist title, so it must stay first)
-    var d = new Date(), pad = function (n) { return (n < 10 ? '0' : '') + n; };
-    out.splice(1, 0, '* Converted by ee-diary SPICE Converter - https://ee-diary.net - ' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()));
-    notes.push({ type: 'warn', msg: 'General: converted text was not run through PSpice. Include libraries with .LIB / .INC and test a small circuit first.' });
+    // Collapse blank lines, then add the ee-diary header (after the title line for main netlists)
+    out = out.filter(function (x, k) { return x.trim() !== '' || (k > 0 && out[k - 1].trim() !== ''); });
+    while (out.length && out[0].trim() === '') out.shift();
+    var H = core.header('SPICE3f5', 'PSpice');
+    if (hasAnalysis) out.splice.apply(out, [1, 0].concat(H)); else out = H.concat([''], out);
     return { text: out.join('\n'), notes: notes, changed: changed, flagged: flagged };
   }
 
